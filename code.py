@@ -7,20 +7,7 @@ import json
 '''-<>-<>-<>-<>-<>-<>-<>-<>-<>-<>-<>-<>-<>-<>-<>-<>-<>-<>-'''
 ''' NOTES '''
 '''
-| 1 | - Construção do arquivo json
-
-    len(jsonFile) -> 7
-    jsonFile[0] -> {
-    jsonFile[1] -> "numero_casas":12,
-    jsonFile[2] -> "token":"583e2c39c3c48ff7ba43dfbebfa1c2f0e831788c",
-    jsonFile[3] -> "cifrado":"bdasdmyyuzs xmzsgmsqe, xuwq bullme, oayq 
-                    uz azxk fia eulqe: faa nus mzp faa eymxx. duotmdp bmffue",
-    jsonFile[4] -> "decifrado":"",
-    jsonFile[5] -> "resumo_criptografico":""
-    jsonFile[6] -> }
-'''
-'''
-| 2 | - Funções que podem ajudar
+| 1 | - Funções que podem ajudar
 
     .lower() -> minusculo
 '''
@@ -31,42 +18,40 @@ help = 'abcdefghijklmnopqrstuvwxyz'
 
 # Função que abre o arquivo
 def openJson():
-    # Lendo aquivo json
-    file = open('answer.json', 'r')
-    # Preenchendo o vetor jsonFile, cada linha um espaço do vetor
-    jsonFile = file.readlines()
+    with open('answer.json', 'r') as myfile:
+        data = myfile.read()
+    
+    jsonFile = json.loads(data)
+    return [jsonFile['numero_casas'],jsonFile['cifrado']]
 
-    # Fechando arquivo de leitura
-    file.close()
-    return jsonFile
+    
 
-def find(letter):
-    position = help.find(letter) - 12
+def find(letter, key):
+    position = help.find(letter) - key
     return help[position]
 
-def operation(letter):
-    if 'z' >= letter >= 'm': return chr(ord(letter) - 12)
-    elif 'l' >= letter >= 'a': return find(letter)
+def operation(letter, key):
+    if 'z' >= letter >= 'm': return chr(ord(letter) - key)
+    elif 'l' >= letter >= 'a': return find(letter, key)
     else: return letter
 
-def decryption(text):
+def decryption(text, key):
     if len(text) == 0: return text
-    else: return operation(text[0]) + decryption(text[1:])
+    else: return operation(text[0], key) + decryption(text[1:], key)
 
 # Função principal
 def main():
     # Obtendo o vetor com o arquivo através da chamada de função
     jsonFile = openJson()
 
-    # jsonFile[3]
-    # return decryption(?)
+    decrypted = decryption(jsonFile[1], jsonFile[0])
 
-    
+    return decrypted
     
         
 
 txt = 'bdasdmyyuzs'
 txt2 = 'bdasdmyyuzs xmzsgmsqe, xuwq bullme, oayq uz azxk fia eulqe: faa nus mzp faa eymxx. duotmdp bmffue'
 
-print(decryption(txt2))
+# print(decryption(txt2))
 # print(find('l'))
