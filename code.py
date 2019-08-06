@@ -1,6 +1,7 @@
 
 # Importando biblioteca json
 import json
+import hashlib
 
 
 
@@ -18,13 +19,16 @@ help = 'abcdefghijklmnopqrstuvwxyz'
 
 # Função que abre o arquivo
 def openJson():
-    with open('answer.json', 'r') as myfile:
+    with open('text.json', 'r') as myfile:
         data = myfile.read()
     
     jsonFile = json.loads(data)
-    return [jsonFile['numero_casas'],jsonFile['cifrado']]
+    return [jsonFile['numero_casas'],jsonFile['cifrado'],jsonFile['token']]
 
-    
+def closeJson(decrypted):
+    with open('text.json', 'w') as outfile:
+        # json.dump(decrypted, outfile)
+        json.dumps({'decifrado': decrypted}, sort_keys=True, separators=(',', ': '))
 
 def find(letter, key):
     position = help.find(letter) - key
@@ -46,11 +50,14 @@ def main():
 
     decrypted = decryption(jsonFile[1], jsonFile[0])
 
-    return decrypted
-    
-        
+    shaUm = hashlib.sha1()
+    shaUm.update(decrypted.encode("utf-8"))
+    encriptado = shaUm.hexdigest()
 
-txt = 'bdasdmyyuzs'
+
+if __name__ == '__main__':
+    main()
+
 txt2 = 'bdasdmyyuzs xmzsgmsqe, xuwq bullme, oayq uz azxk fia eulqe: faa nus mzp faa eymxx. duotmdp bmffue'
 
 # print(decryption(txt2))
